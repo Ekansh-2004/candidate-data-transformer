@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from models import Candidate, Education, Experience, Provenance, Skill
+from normalizers import PhoneNormalizer, SkillCanonicalizer
 
 from .config import ProjectionConfig
 
@@ -25,8 +27,18 @@ class CandidateProjector:
         "skills",
     )
 
+    def __init__(self) -> None:
+        self._phone_normalizer = PhoneNormalizer()
+        self._skill_canonicalizer = SkillCanonicalizer()
+
     def project(self, candidate: Candidate, config: ProjectionConfig) -> dict[str, Any]:
         """Project a canonical candidate into the configured output schema."""
+        if config.fields is not None:
+            return self._project_fields_mode(candidate, config)
+        return self._project_legacy_mode(candidate, config)
+
+    def _project_legacy_mode(self, candidate: Candidate, config: ProjectionConfig) -> dict[str, Any]:
+        """Project candidate using the standard default schema."""
         projected: dict[str, Any] = {}
 
         for field_name in self.TOP_LEVEL_FIELDS:
@@ -52,6 +64,102 @@ class CandidateProjector:
                 )
 
         return projected
+
+    def _project_fields_mode(self, candidate: Candidate, config: ProjectionConfig) -> dict[str, Any]:
+        """Project candidate using explicit user-configured fields and mappings."""
+        projected: dict[str, Any] = {}
+        fields = config.fields or []
+
+        for field_spec in fields:
+            val = self._resolve_path(candidate, field_spec.source_path)
+            is_missing = val is None or val == "" or val == [] or val == {}
+
+            if is_missing:
+                if field_spec.required and config.on_missing == "error":
+                    raise ValueError(f"Required field '{field_spec.path}' (resolved from '{field_spec.source_path}') is missing.")
+                if config.on_missing == "null":
+                    projected[field_spec.path] = None
+                # If on_missing == "omit", we exclude it
+                continue
+
+            normalized_val = self._apply_normalization(val, field_spec.normalize)
+            projected[field_spec.path] = normalized_val
+
+        if config.include_confidence:
+            confidence_payload = self._project_confidence(candidate)
+            if confidence_payload:
+                projected["confidence"] = confidence_payload
+
+        if config.include_provenance:
+            provenance_payload = self._project_top_level_provenance(candidate)
+            if provenance_payload:
+                projected["provenance"] = provenance_payload
+
+        return projected
+
+    def _resolve_path(self, candidate: Candidate, path: str) -> Any:
+        """Resolve a JSONPath-like string path against the canonical candidate."""
+        # 1. Array flatten: e.g. "skills[].name"
+        flatten_match = re.fullmatch(r"([a-zA-Z_][a-zA-Z0-9_]*)\[\]\.([a-zA-Z_][a-zA-Z0-9_]*)", path)
+        if flatten_match:
+            list_attr = flatten_match.group(1)
+            sub_attr = flatten_match.group(2)
+            if not hasattr(candidate, list_attr):
+                return None
+            items = getattr(candidate, list_attr)
+            if not isinstance(items, list):
+                return None
+            result = []
+            for item in items:
+                if hasattr(item, sub_attr):
+                    val = getattr(item, sub_attr)
+                    if val is not None:
+                        result.append(val)
+            return result if result else None
+
+        # 2. List index: e.g. "emails[0]"
+        index_match = re.fullmatch(r"([a-zA-Z_][a-zA-Z0-9_]*)\[(\d+)\]", path)
+        if index_match:
+            list_attr = index_match.group(1)
+            idx = int(index_match.group(2))
+            if not hasattr(candidate, list_attr):
+                return None
+            items = getattr(candidate, list_attr)
+            if not isinstance(items, list):
+                return None
+            if idx < len(items):
+                return items[idx]
+            return None
+
+        # 3. Simple attribute: e.g. "full_name"
+        if hasattr(candidate, path):
+            return getattr(candidate, path)
+
+        # Backward compatibility for old "phones[0]" alias from prompt:
+        if path == "phones[0]" and hasattr(candidate, "phone_numbers"):
+            phones = candidate.phone_numbers
+            return phones[0] if phones else None
+
+        return None
+
+    def _apply_normalization(self, value: Any, normalize: str | None) -> Any:
+        """Apply the requested per-field normalization format."""
+        if not normalize or value is None:
+            return value
+
+        if normalize == "E164":
+            if isinstance(value, list):
+                res = [self._phone_normalizer.normalize(v) for v in value]
+                return [v for v in res if v is not None]
+            return self._phone_normalizer.normalize(value)
+
+        if normalize == "canonical":
+            if isinstance(value, list):
+                res = [self._skill_canonicalizer.normalize_name(v) for v in value]
+                return [v for v in res if v is not None]
+            return self._skill_canonicalizer.normalize_name(value)
+
+        return value
 
     def _project_field(
         self,

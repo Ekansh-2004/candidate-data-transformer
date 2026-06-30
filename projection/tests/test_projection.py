@@ -196,3 +196,80 @@ def test_projector_hides_nested_provenance_when_disabled() -> None:
     projected = CandidateProjector().project(candidate, config)
 
     assert projected["skills"] == ["Python"]
+
+
+def test_projector_configurable_fields_mode_whitelists_and_resolves_paths() -> None:
+    """Projector should support whitelist fields, custom JSONPath from resolution, normalizations, and on_missing policies."""
+    candidate = Candidate(
+        full_name="Grace Hopper",
+        emails=["grace@example.com", "hopper@example.com"],
+        phone_numbers=["(415) 555-0100"],
+        skills=[Skill(name="cobol"), Skill(name="programming")],
+    )
+
+    # 1. Test basic custom projection with indexing and flatten mapping
+    config = ProjectionConfig.model_validate({
+        "fields": [
+            {"path": "name", "from": "full_name", "type": "string"},
+            {"path": "primary_email", "from": "emails[0]", "type": "string"},
+            {"path": "phone", "from": "phone_numbers[0]", "type": "string", "normalize": "E164"},
+            {"path": "skills", "from": "skills[].name", "type": "string[]", "normalize": "canonical"},
+        ],
+        "on_missing": "omit"
+    })
+
+    projected = CandidateProjector().project(candidate, config)
+
+    assert projected["name"] == "Grace Hopper"
+    assert projected["primary_email"] == "grace@example.com"
+    assert projected["phone"] == "+14155550100"
+    assert projected["skills"] == ["Cobol", "Programming"]
+    assert "emails" not in projected
+    assert "phone_numbers" not in projected
+
+
+def test_projector_configurable_fields_mode_handles_missing_omit() -> None:
+    """Projector should omit missing fields when on_missing is set to omit."""
+    candidate = Candidate(full_name="Grace Hopper")
+    config = ProjectionConfig.model_validate({
+        "fields": [
+            {"path": "name", "from": "full_name", "type": "string"},
+            {"path": "missing_field", "from": "emails[0]", "type": "string"},
+        ],
+        "on_missing": "omit"
+    })
+
+    projected = CandidateProjector().project(candidate, config)
+    assert projected == {"name": "Grace Hopper"}
+
+
+def test_projector_configurable_fields_mode_handles_missing_null() -> None:
+    """Projector should render missing fields as null when on_missing is set to null."""
+    candidate = Candidate(full_name="Grace Hopper")
+    config = ProjectionConfig.model_validate({
+        "fields": [
+            {"path": "name", "from": "full_name", "type": "string"},
+            {"path": "missing_field", "from": "emails[0]", "type": "string"},
+        ],
+        "on_missing": "null"
+    })
+
+    projected = CandidateProjector().project(candidate, config)
+    assert projected == {"name": "Grace Hopper", "missing_field": None}
+
+
+def test_projector_configurable_fields_mode_raises_on_missing_required_error() -> None:
+    """Projector should raise a ValueError when a required field is missing and on_missing is set to error."""
+    candidate = Candidate(full_name="Grace Hopper")
+    config = ProjectionConfig.model_validate({
+        "fields": [
+            {"path": "name", "from": "full_name", "type": "string"},
+            {"path": "missing_field", "from": "emails[0]", "type": "string", "required": True},
+        ],
+        "on_missing": "error"
+    })
+
+    import pytest
+    with pytest.raises(ValueError, match="Required field 'missing_field'"):
+        CandidateProjector().project(candidate, config)
+
