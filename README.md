@@ -114,35 +114,41 @@ The implemented CLI arguments are:
 
 ## Configuration
 
-Projection behavior is controlled by a JSON configuration file passed through `--projection-config`.
+Projection behavior is controlled by a JSON configuration file passed through `--projection-config`. The engine operates in two modes:
 
-Supported keys include:
+1. **Legacy Mode (Default):** When `fields` is omitted, all canonical fields are outputted using standard mapping rules (e.g. `field_aliases`, `include_confidence`, `include_provenance`).
+2. **Field Projection Mode:** When `fields` is specified, the output is restricted *exactly* to the whitelisted fields mapped from paths in the canonical profile.
 
-- `output.indent`
-- `output.ensure_ascii`
-- `output.sort_keys`
-- `output.include_empty_fields`
-- `field_aliases`
-- `include_confidence`
-- `include_provenance`
-- `include_nested_provenance`
+### Config Options
 
-Example configuration:
+* `fields`: An array of field specifications. Each spec supports:
+  * `path` (required): The target key name in the output JSON.
+  * `from` (optional): Source path in the canonical candidate profile. Defaults to `path`. Supports path resolution:
+    * Attribute access: `"full_name"`
+    * List index selection: `"emails[0]"` or `"phone_numbers[0]"`
+    * Array property flattening: `"skills[].name"`
+  * `type` (optional): Expected data type (informational).
+  * `required` (optional): Set `true` to make this field mandatory.
+  * `normalize` (optional): Transform the output value:
+    * `"E164"` – Formats telephone string to E.164.
+    * `"canonical"` – Canonicalizes casing and spelling (e.g. `React.js`, `FastAPI`).
+* `on_missing`: Action when a field is missing (default `"omit"`):
+  * `"omit"` – Exclude the key from the output payload.
+  * `"null"` – Render the key as a JSON `null`.
+  * `"error"` – Raise a `ValueError` if the field is required.
+
+### Example Configuration
 
 ```json
 {
-  "output": {
-    "include_empty_fields": false,
-    "indent": 2,
-    "sort_keys": true,
-    "ensure_ascii": false
-  },
-  "field_aliases": {
-    "full_name": "name"
-  },
-  "include_confidence": true,
-  "include_provenance": true,
-  "include_nested_provenance": false
+  "fields": [
+    { "path": "name", "from": "full_name", "type": "string", "required": true },
+    { "path": "primary_email", "from": "emails[0]", "type": "string", "required": true },
+    { "path": "phone", "from": "phone_numbers[0]", "type": "string", "normalize": "E164" },
+    { "path": "skills", "from": "skills[].name", "type": "string[]", "normalize": "canonical" }
+  ],
+  "on_missing": "null",
+  "include_confidence": true
 }
 ```
 
