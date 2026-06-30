@@ -67,6 +67,9 @@ class CandidateTransformationOrchestrator:
             self._write_output(validated_payload, output_target, projection_config)
             LOGGER.info("Candidate transformation pipeline completed successfully")
             return validated_payload
+        except (FileNotFoundError, ValueError) as exc:
+            LOGGER.error("Candidate transformation pipeline failed: %s", exc)
+            raise
         except (
             Exception
         ) as exc:  # pragma: no cover - exercised through integration behavior
@@ -79,6 +82,10 @@ class CandidateTransformationOrchestrator:
         if not candidate_path.exists():
             raise FileNotFoundError(
                 f"{label} input file does not exist: {candidate_path}"
+            )
+        if not candidate_path.is_file():
+            raise ValueError(
+                f"{label} input path must point to a file: {candidate_path}"
             )
         return candidate_path
 

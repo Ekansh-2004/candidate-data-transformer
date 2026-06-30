@@ -107,6 +107,19 @@ def test_orchestrator_runs_full_pipeline_and_writes_json_output(tmp_path: Path) 
     assert payload["name"] == "Ada Lovelace"
 
 
+def test_orchestrator_rejects_directory_inputs(tmp_path: Path) -> None:
+    """The orchestrator should reject directory paths before attempting file reads."""
+    csv_dir = tmp_path / "csv_inputs"
+    csv_dir.mkdir()
+    resume_path = tmp_path / "resume.pdf"
+    _create_pdf(resume_path, ["Grace Hopper"])
+
+    orchestrator = CandidateTransformationOrchestrator()
+
+    with pytest.raises(ValueError, match="CSV input path must point to a file"):
+        orchestrator.run(csv_path=csv_dir, resume_path=resume_path)
+
+
 def test_orchestrator_uses_default_projection_config_when_not_provided(
     tmp_path: Path,
 ) -> None:
