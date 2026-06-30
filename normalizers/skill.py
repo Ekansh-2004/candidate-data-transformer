@@ -6,28 +6,46 @@ import re
 
 from models import Skill
 
-
 WHITESPACE_PATTERN = re.compile(r"\s+")
+NON_ALPHANUMERIC_PATTERN = re.compile(r"[^a-z0-9]+")
 
 
 class SkillCanonicalizer:
     """Normalize skill names into a consistent canonical vocabulary."""
 
     CANONICAL_SKILLS: dict[str, str] = {
+        "apache kafka": "Apache Kafka",
         "c plus plus": "C++",
         "c++": "C++",
+        "chromadb": "ChromaDB",
+        "fastapi": "FastAPI",
+        "github": "GitHub",
         "golang": "Go",
+        "java": "Java",
+        "javascript": "JavaScript",
         "js": "JavaScript",
+        "langchain": "LangChain",
+        "langgraph": "LangGraph",
+        "mongodb": "MongoDB",
+        "mysql": "MySQL",
         "node": "Node.js",
         "node js": "Node.js",
-        "node.js": "Node.js",
+        "nodejs": "Node.js",
+        "pgvector": "pgvector",
         "postgres": "PostgreSQL",
         "postgresql": "PostgreSQL",
         "py": "Python",
         "python": "Python",
-        "reactjs": "React",
-        "react.js": "React",
+        "react": "React.js",
+        "react js": "React.js",
+        "reactjs": "React.js",
+        "rest api": "REST APIs",
+        "rest apis": "REST APIs",
+        "spring boot": "Spring Boot",
+        "tailwind": "Tailwind CSS",
+        "tailwind css": "Tailwind CSS",
         "ts": "TypeScript",
+        "typescript": "TypeScript",
     }
 
     def normalize_name(self, value: str | None) -> str | None:
@@ -39,13 +57,16 @@ class SkillCanonicalizer:
         if not normalized:
             return None
 
-        lookup_key = normalized.casefold().replace(".", " ").replace("-", " ")
+        lookup_key = NON_ALPHANUMERIC_PATTERN.sub(" ", normalized.casefold()).strip()
         lookup_key = WHITESPACE_PATTERN.sub(" ", lookup_key).strip()
         canonical_name = self.CANONICAL_SKILLS.get(lookup_key)
         if canonical_name is not None:
             return canonical_name
 
         if normalized.isupper() and len(normalized) <= 5:
+            return normalized
+
+        if any(char.isupper() for char in normalized):
             return normalized
 
         return normalized.title()

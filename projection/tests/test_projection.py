@@ -136,6 +136,20 @@ def test_projector_omits_empty_values_by_default() -> None:
     assert projected == {"full_name": "Ada Lovelace"}
 
 
+def test_projector_projects_simple_skills_as_strings_in_clean_output() -> None:
+    """Default projection should emit skills as plain strings even when they carry provenance."""
+    candidate = Candidate(
+        skills=[
+            Skill(name="Python", provenance=[_make_provenance("skills")]),
+            Skill(name="React.js", provenance=[_make_provenance("skills")]),
+        ]
+    )
+
+    projected = CandidateProjector().project(candidate, ProjectionConfig())
+
+    assert projected["skills"] == ["Python", "React.js"]
+
+
 def test_projector_can_retain_empty_values_when_configured() -> None:
     """Projection should keep empty fields when the output config requests them."""
     candidate = Candidate(full_name="Ada Lovelace")
@@ -173,7 +187,7 @@ def test_projector_can_hide_confidence_and_provenance_sections() -> None:
 
 
 def test_projector_hides_nested_provenance_when_disabled() -> None:
-    """Nested records should omit provenance when configured to do so."""
+    """Nested records should emit as plain strings when provenance is disabled and no other metadata."""
     candidate = Candidate(
         skills=[Skill(name="Python", provenance=[_make_provenance("skills")])]
     )
@@ -181,4 +195,4 @@ def test_projector_hides_nested_provenance_when_disabled() -> None:
 
     projected = CandidateProjector().project(candidate, config)
 
-    assert projected["skills"] == [{"name": "Python"}]
+    assert projected["skills"] == ["Python"]

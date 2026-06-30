@@ -5,7 +5,12 @@ from __future__ import annotations
 from datetime import date
 
 from models import Skill
-from normalizers import DateNormalizer, EmailNormalizer, PhoneNormalizer, SkillCanonicalizer
+from normalizers import (
+    DateNormalizer,
+    EmailNormalizer,
+    PhoneNormalizer,
+    SkillCanonicalizer,
+)
 
 
 def test_email_normalizer_lowercases_and_trims() -> None:
@@ -72,6 +77,8 @@ def test_skill_canonicalizer_maps_aliases_and_deduplicates() -> None:
         Skill(name="python"),
         Skill(name="Py"),
         Skill(name="node js"),
+        Skill(name="React.js"),
+        Skill(name="reactjs"),
         Skill(name="SQL"),
     ]
 
@@ -80,6 +87,7 @@ def test_skill_canonicalizer_maps_aliases_and_deduplicates() -> None:
     assert [skill.name for skill in normalized_skills] == [
         "Python",
         "Node.js",
+        "React.js",
         "SQL",
     ]
 
@@ -90,3 +98,31 @@ def test_skill_canonicalizer_title_cases_unknown_skills() -> None:
 
     assert canonicalizer.normalize_name("machine learning") == "Machine Learning"
     assert canonicalizer.normalize_name(None) is None
+
+
+def test_skill_canonicalizer_preserves_brand_name_casing() -> None:
+    """Key technology brand names should be preserved with their official casing."""
+    canonicalizer = SkillCanonicalizer()
+
+    assert canonicalizer.normalize_name("javascript") == "JavaScript"
+    assert canonicalizer.normalize_name("js") == "JavaScript"
+    assert canonicalizer.normalize_name("react") == "React.js"
+    assert canonicalizer.normalize_name("react js") == "React.js"
+    assert canonicalizer.normalize_name("reactjs") == "React.js"
+    assert canonicalizer.normalize_name("node") == "Node.js"
+    assert canonicalizer.normalize_name("node js") == "Node.js"
+    assert canonicalizer.normalize_name("nodejs") == "Node.js"
+    assert canonicalizer.normalize_name("mysql") == "MySQL"
+    assert canonicalizer.normalize_name("mongodb") == "MongoDB"
+    assert canonicalizer.normalize_name("fastapi") == "FastAPI"
+    assert canonicalizer.normalize_name("langchain") == "LangChain"
+    assert canonicalizer.normalize_name("langgraph") == "LangGraph"
+    assert canonicalizer.normalize_name("chromadb") == "ChromaDB"
+    assert canonicalizer.normalize_name("tailwind") == "Tailwind CSS"
+    assert canonicalizer.normalize_name("tailwind css") == "Tailwind CSS"
+    assert canonicalizer.normalize_name("rest api") == "REST APIs"
+    assert canonicalizer.normalize_name("rest apis") == "REST APIs"
+    assert canonicalizer.normalize_name("github") == "GitHub"
+    assert canonicalizer.normalize_name("apache kafka") == "Apache Kafka"
+    assert canonicalizer.normalize_name("postgresql") == "PostgreSQL"
+    assert canonicalizer.normalize_name("postgres") == "PostgreSQL"

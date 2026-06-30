@@ -110,8 +110,19 @@ class CandidateProjector:
             ]
         return self._drop_empty_values(payload, config)
 
-    def _project_skill(self, skill: Skill, config: ProjectionConfig) -> dict[str, Any]:
-        """Project one skill entry."""
+    def _project_skill(
+        self, skill: Skill, config: ProjectionConfig
+    ) -> dict[str, Any] | str:
+        """Project one skill entry as a simple string when no extra metadata is needed."""
+        should_emit_object = (
+            skill.category is not None
+            or skill.years_experience is not None
+            or (config.include_confidence and skill.confidence is not None)
+            or (config.include_nested_provenance and skill.provenance)
+        )
+        if not should_emit_object:
+            return skill.name
+
         payload = {
             "name": skill.name,
             "category": skill.category,

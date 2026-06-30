@@ -1,118 +1,73 @@
 {
-  "candidate_id": "cand001",
   "education": [
     {
       "degree": "Bachelor of Technology",
-      "end_date": "2027-06-01",
-      "field_of_study": "Computer Science and Engineering — CGPA: 9.36/10",
+      "field_of_study": "Computer Science and Engineering",
       "institution": "The LNM Institute of Information Technology",
-      "location": "Jaipur, India",
-      "start_date": "2023-07-01"
+      "location": "Jaipur, India"
     }
   ],
   "emails": [
-    "ekansh@example.com",
-    "chauhan.ekansh06@gmail.com"
+    "wwwkartiksingh121@gmail.com"
   ],
   "experience": [
     {
-      "company": "Student",
-      "title": "Software Developer Intern"
+      "company": "The LNMIIT",
+      "description": "TAship for PPS, Digital Systems, DBMS, COA, and Computer Networks ◦Student Mentorship: Guided 500+ students across 5 core lab courses, assisting with C/SQL programming, debugging, logic building, and practical system implementations. ◦Evaluation & Support: Evaluated practical submissions, clarified theoretical doubts, and fostered a supportive environment to help juniors confidently approach complex technical concepts.",
+      "highlights": [
+        "TAship for PPS, Digital Systems, DBMS, COA, and Computer Networks",
+        "◦Student Mentorship: Guided 500+ students across 5 core lab courses, assisting with C/SQL programming, debugging,",
+        "logic building, and practical system implementations.",
+        "◦Evaluation & Support: Evaluated practical submissions, clarified theoretical doubts, and fostered a supportive",
+        "environment to help juniors confidently approach complex technical concepts."
+      ],
+      "title": "Teaching Assistant - Core CS Lab Courses"
+    },
+    {
+      "company": "The LNMIIT",
+      "description": "Led communication, sponsorship, and team management for the annual sports fest ◦Leadership & Execution: Spearheaded a PR team of 50+ members to successfully organize Desportivos 2026, driving 750+ players participation from colleges across India. ◦Sponsorship & Outreach: Directed sponsorship drives to secure funds, managed official announcements, and trained a junior team to build external college connections.",
+      "highlights": [
+        "Led communication, sponsorship, and team management for the annual sports fest",
+        "◦Leadership & Execution: Spearheaded a PR team of 50+ members to successfully organize Desportivos 2026, driving",
+        "750+ players participation from colleges across India.",
+        "◦Sponsorship & Outreach: Directed sponsorship drives to secure funds, managed official announcements, and trained a",
+        "junior team to build external college connections."
+      ],
+      "title": "PR Head - Desportivos (College Sports Fest)"
+    },
+    {
+      "company": "The LNMIIT",
+      "description": "Contributed to literary culture and event organization ◦Event Coordination: Organized open mics, writing contests, and debates to promote student participation in campus literary activities.",
+      "highlights": [
+        "Contributed to literary culture and event organization",
+        "◦Event Coordination: Organized open mics, writing contests, and debates to promote student participation in campus",
+        "literary activities."
+      ],
+      "title": "Core Member - Literary Committee"
     }
   ],
-  "full_name": "Ekansh Chauhan",
-  "headline": "—",
-  "locations": [
-    "India"
-  ],
+  "full_name": "Kartik Singh",
   "phone_numbers": [
-    "+919808050786"
+    "+917651965230"
   ],
   "skills": [
-    {
-      "name": "Agentic Ai"
-    },
-    {
-      "name": "C++"
-    },
-    {
-      "name": "Chromadb"
-    },
-    {
-      "name": "Data Structures And Algorithms"
-    },
-    {
-      "name": "Express.Js"
-    },
-    {
-      "name": "FAISS"
-    },
-    {
-      "name": "Fastapi"
-    },
-    {
-      "name": "Git"
-    },
-    {
-      "name": "Github"
-    },
-    {
-      "name": "Javascript"
-    },
-    {
-      "name": "JWT"
-    },
-    {
-      "name": "Langchain"
-    },
-    {
-      "name": "Langgraph"
-    },
-    {
-      "name": "Mongodb"
-    },
-    {
-      "name": "Mysql"
-    },
-    {
-      "name": "Node.js"
-    },
-    {
-      "name": "Ollama"
-    },
-    {
-      "name": "Postman"
-    },
-    {
-      "name": "Python"
-    },
-    {
-      "name": "React"
-    },
-    {
-      "name": "React.Js"
-    },
-    {
-      "name": "Redux Toolkit"
-    },
-    {
-      "name": "Rest Apis"
-    },
-    {
-      "name": "SQL"
-    },
-    {
-      "name": "Sqlite"
-    },
-    {
-      "name": "Stripe"
-    },
-    {
-      "name": "System Design"
-    },
-    {
-      "name": "Tailwind Css"
-    }
+    "Apache Kafka",
+    "C",
+    "Docker",
+    "Git",
+    "GitHub",
+    "Java",
+    "Leadership",
+    "Mentorship",
+    "Microservices Architecture",
+    "pgvector",
+    "PostgreSQL",
+    "Project Management",
+    "Public Speaking",
+    "Redis",
+    "REST APIs",
+    "Spring Boot",
+    "SQL"
   ],
-  "summary": "Results-driven software developer with hands-on experience in full-stack software development and AI systems. Proficient in designing and delivering scalable REST API backends and production-grade RAG-based applications. Adept at end-to-end software development lifecycle from system design and implementation to testing and optimization. Strong foundation in data structures, algorithms, and object-oriented programming with a track record of measurable performance improvements across academic and independent software"
+  "summary": "Backend engineer focused on building clean, reliable distributed systems with Java and Spring Boot. Experienced in setting up event-driven architectures using Apache Kafka and resolving complex concurrency and performance bottlenecks with Redis. I also enjoy bridging the gap between traditional backend systems and modern AI, having built intelligent pipelines using LLMs and vector databases like pgvector. • Languages: Java (Primary), C, SQL • Core Competencies: Data Structures & Algorithms (DSA), Object-Oriented Programming (OOP), Distributed Systems • Frameworks: Spring Boot, Microservices Architecture, REST APIs • Databases & Tools: PostgreSQL, Redis, Apache Kafka, Docker, Git, GitHub, pgvector"
 }

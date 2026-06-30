@@ -22,9 +22,6 @@ class CandidateNormalizer:
 
     def normalize(self, candidate: Candidate) -> Candidate:
         """Return a normalized copy of a candidate profile."""
-        if not candidate.model_dump():
-            return candidate
-
         normalized_emails = self.email_normalizer.normalize_many(candidate.emails)
         normalized_phone_numbers = self.phone_normalizer.normalize_many(
             candidate.phone_numbers

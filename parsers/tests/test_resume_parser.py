@@ -79,6 +79,26 @@ def test_parse_resume_extracts_candidate_sections(tmp_path: Path) -> None:
     assert "full_name" in candidate.provenance
 
 
+def test_parse_resume_skips_placeholder_headlines_until_meaningful_text(
+    tmp_path: Path,
+) -> None:
+    """The parser should ignore placeholder headline values and keep looking for a real title."""
+    pdf_path = tmp_path / "placeholder_headline.pdf"
+    _create_pdf(
+        pdf_path,
+        [
+            "Ada Lovelace",
+            "—",
+            "Staff Software Engineer",
+            "ada@example.com",
+        ],
+    )
+
+    candidate = ResumePdfParser().parse(pdf_path)
+
+    assert candidate.headline == "Staff Software Engineer"
+
+
 def test_parse_resume_supports_fuzzy_section_headers(tmp_path: Path) -> None:
     """The parser should handle minor variations in section headings."""
     pdf_path = tmp_path / "fuzzy_headers.pdf"
@@ -343,3 +363,111 @@ def test_parse_resume_logs_pdf_open_failures(
             ResumePdfParser().parse(pdf_path)
 
     assert "Failed to parse resume PDF file" in caplog.text
+
+
+def test_parse_resume_skips_social_link_lines_for_headline(tmp_path: Path) -> None:
+    """The parser should not use GitHub or LinkedIn lines as the candidate headline."""
+    pdf_path = tmp_path / "social_headline.pdf"
+    _create_pdf(
+        pdf_path,
+        [
+            "Kartik Singh",
+            "GitHub: github.com/23kartiksingh",
+            "LinkedIn: linkedin.com/in/kartiksingh",
+            "Backend Engineer",
+            "kartik@example.com",
+        ],
+    )
+
+    candidate = ResumePdfParser().parse(pdf_path)
+
+    assert candidate.headline == "Backend Engineer"
+
+
+def test_parse_resume_extracts_multi_word_tech_skills(tmp_path: Path) -> None:
+    """The parser should extract multi-word tech skill names like 'REST APIs' and 'Tailwind CSS'."""
+    pdf_path = tmp_path / "multi_word_skills.pdf"
+    _create_pdf(
+        pdf_path,
+        [
+            "Jane Doe",
+            "",
+            "Technical Skills",
+            "Frameworks: FastAPI, React.js, Node.js",
+            "Databases & Tools: MySQL, MongoDB, ChromaDB",
+            "Other: REST APIs, Tailwind CSS, Apache Kafka",
+        ],
+    )
+
+    candidate = ResumePdfParser().parse(pdf_path)
+    skill_names = [skill.name for skill in candidate.skills]
+
+    assert "FastAPI" in skill_names
+    assert "React.js" in skill_names
+    assert "Node.js" in skill_names
+    assert "MySQL" in skill_names
+    assert "MongoDB" in skill_names
+    assert "REST APIs" in skill_names
+    assert "Tailwind CSS" in skill_names
+    assert "Apache Kafka" in skill_names
+
+
+def test_parse_resume_treats_nested_category_labels_as_prefixes(
+    tmp_path: Path,
+) -> None:
+    """Category label prefixes like 'Databases & Tools:' should not appear as skills."""
+    pdf_path = tmp_path / "category_labels.pdf"
+    _create_pdf(
+        pdf_path,
+        [
+            "Jane Doe",
+            "",
+            "Technical Skills",
+            "Languages: Python, Java",
+            "Databases & Tools: PostgreSQL, Docker",
+            "Soft Skills: Leadership, Communication",
+            "Developer Tools: Git, GitHub",
+        ],
+    )
+
+    candidate = ResumePdfParser().parse(pdf_path)
+    skill_names = [skill.name for skill in candidate.skills]
+
+    # Category labels must not appear as skills
+    assert "Languages" not in skill_names
+    assert "Databases & Tools" not in skill_names
+    assert "Soft Skills" not in skill_names
+    assert "Developer Tools" not in skill_names
+    # Actual skills must be present
+    assert "Python" in skill_names
+    assert "Java" in skill_names
+    assert "Docker" in skill_names
+    assert "Leadership" in skill_names
+
+
+def test_parse_resume_separates_degree_field_and_cgpa(tmp_path: Path) -> None:
+    """The parser should split 'B.Tech - CSE; CGPA: 8.63' into degree, field_of_study, and grade."""
+    pdf_path = tmp_path / "cgpa_education.pdf"
+    _create_pdf(
+        pdf_path,
+        [
+            "Kartik Singh",
+            "",
+            "Education",
+            "The LNM Institute of Information Technology",
+            "Jaipur, India",
+            "Bachelor of Technology - Computer Science and Engineering; CGPA: 8.63",
+            "July 2023 - June 2027",
+        ],
+    )
+
+    candidate = ResumePdfParser().parse(pdf_path)
+
+    assert len(candidate.education) == 1
+    edu = candidate.education[0]
+    assert edu.institution == "The LNM Institute of Information Technology"
+    assert edu.degree == "Bachelor of Technology"
+    assert edu.field_of_study == "Computer Science and Engineering"
+    # CGPA should not appear inside the degree field
+    assert "CGPA" not in (edu.degree or "")
+    assert edu.location == "Jaipur, India"

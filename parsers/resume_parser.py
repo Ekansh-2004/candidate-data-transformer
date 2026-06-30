@@ -134,6 +134,12 @@ class ResumePdfParser(CandidateParser):
         if not normalized_line or len(normalized_line) > 40:
             return None
 
+        # Lines with a colon followed by content are category:value lines (e.g. skills
+        # subsections), not section headings.  Only strip a trailing colon above — if a
+        # colon still exists here, the content after it is non-empty.
+        if ":" in normalized_line:
+            return None
+
         for section_name, aliases in SECTION_ALIASES.items():
             if normalized_line in aliases:
                 return section_name
@@ -230,6 +236,10 @@ class ResumePdfParser(CandidateParser):
                 continue
             if full_name and line == full_name:
                 continue
+            if self._is_placeholder_value(line):
+                continue
+            if self._is_social_link_line(line):
+                continue
             return line
         return None
 
@@ -284,14 +294,53 @@ class ResumePdfParser(CandidateParser):
     def _extract_skills(
         self, sections: dict[str, list[str]], source_name: str
     ) -> list[Skill]:
-        """Extract skills only from a dedicated skills section and ignore adjacent prose."""
-        skills_section = sections.get("skills", [])
-        if not skills_section:
+        """Extract skills from the dedicated skills section and from structured summary bullets.
+
+        Some resumes list their tech stack inside the summary as category bullets such as:
+            • Languages: Java, C, SQL
+            • Frameworks: Spring Boot, REST APIs
+        This method picks those up in addition to a standalone skills section.
+        """
+        skills_lines = list(sections.get("skills", []))
+
+        # Also harvest structured '• Category: items' lines from the summary block.
+        # These are recognisable as lines starting with '•' that contain a colon and
+        # whose prefix before the colon looks like a skill category label.
+        # Some PDFs split the label and values across two lines:
+        #   Line N:   '• Languages:'
+        #   Line N+1: 'Java (Primary), C, SQL'
+        # We pair those up before checking.
+        summary_lines = sections.get("summary", [])
+        idx = 0
+        while idx < len(summary_lines):
+            line = summary_lines[idx]
+            if not line:
+                idx += 1
+                continue
+            stripped = line.lstrip("• ").strip()
+            prefix_str: str | None = None
+            suffix_str: str | None = None
+
+            if ":" in stripped:
+                raw_prefix, _, raw_suffix = stripped.partition(":")
+                raw_prefix = raw_prefix.strip()
+                raw_suffix = raw_suffix.strip()
+                if self._looks_like_skill_category(raw_prefix):
+                    if raw_suffix:
+                        # Case 1: label and values on the same line  '• Languages: Java, C'
+                        skills_lines.append(f"{raw_prefix}: {raw_suffix}")
+                    elif idx + 1 < len(summary_lines):
+                        # Case 2: label-only '• Languages:' → values on next line
+                        skills_lines.append(f"{raw_prefix}: {summary_lines[idx + 1].strip()}")
+                        idx += 1
+            idx += 1
+
+        if not skills_lines:
             return []
 
         skills: list[Skill] = []
         seen: set[str] = set()
-        for line in skills_section:
+        for line in skills_lines:
             if not line:
                 continue
             normalized_line = line.lstrip("-*• ").strip()
@@ -326,7 +375,7 @@ class ResumePdfParser(CandidateParser):
             return []
 
         experiences: list[Experience] = []
-        for block in self._split_blocks(experience_section):
+        for block in self._split_experience_blocks(experience_section):
             experience = self._parse_experience_block(block, source_name)
             if experience is None:
                 continue
@@ -515,11 +564,29 @@ class ResumePdfParser(CandidateParser):
         if not normalized:
             return None, None
 
+        # Strip any trailing grade/CGPA annotation appended with a semicolon.
+        # E.g. "Bachelor of Technology - CSE; CGPA: 8.63" → strip "; CGPA: 8.63".
+        if ";" in normalized:
+            main_part, _, tail = normalized.partition(";")
+            tail = tail.strip()
+            if self._looks_like_grade_line(tail):
+                normalized = main_part.strip()
+
+        # Split on " in " first — most common academic pattern.
         if re.search(r"\s+in\s+", normalized, flags=re.IGNORECASE):
             prefix, suffix = re.split(
                 r"\s+in\s+", normalized, maxsplit=1, flags=re.IGNORECASE
             )
             return prefix.strip(), suffix.strip()
+
+        # Split on " - " when the right side looks like a field of study and the
+        # left side looks like a degree abbreviation.
+        if " - " in normalized:
+            degree_part, _, field_part = normalized.partition(" - ")
+            degree_part = degree_part.strip()
+            field_part = field_part.strip()
+            if field_part and not self._looks_like_grade_line(field_part):
+                return degree_part, field_part
 
         if "," in normalized:
             degree, field_of_study = [part.strip() for part in normalized.split(",", 1)]
@@ -586,6 +653,39 @@ class ResumePdfParser(CandidateParser):
             blocks.append(current_block)
         return blocks
 
+    def _split_experience_blocks(self, lines: list[str]) -> list[list[str]]:
+        """Split experience section lines into per-role blocks.
+
+        Blocks are delimited by either a blank line or a new role-title bullet
+        (a line that starts with '•' but NOT '◦', which is used for sub-bullets).
+        This handles PDFs where multiple roles appear consecutively without blank
+        lines between them.
+        """
+        blocks: list[list[str]] = []
+        current_block: list[str] = []
+
+        for line in lines:
+            # Blank line → flush current block.
+            if not line:
+                if current_block:
+                    blocks.append(current_block)
+                    current_block = []
+                continue
+
+            # A line starting with '•' (primary bullet, not '◦' sub-bullet) that
+            # is not already the very first line of a block signals a new role entry.
+            is_primary_bullet = line.startswith("•") and not line.startswith("◦")
+            if is_primary_bullet and current_block:
+                blocks.append(current_block)
+                current_block = []
+
+            current_block.append(line)
+
+        if current_block:
+            blocks.append(current_block)
+
+        return blocks
+
     def _extract_skill_tokens(self, line: str) -> list[str]:
         """Split one skills line into candidate skill tokens while handling category labels."""
         if ":" in line:
@@ -609,13 +709,21 @@ class ResumePdfParser(CandidateParser):
             "languages",
             "frameworks",
             "frameworks & libraries",
+            "frameworks and libraries",
             "libraries",
+            "libraries & frameworks",
             "databases",
+            "databases & tools",
+            "databases and tools",
+            "developer tools",
             "tools",
             "tools & platforms",
             "platforms",
             "concepts",
+            "technologies",
             "skills",
+            "soft skills",
+            "other",
         }
 
     def _clean_skill_token(self, token: str) -> str | None:
@@ -625,9 +733,14 @@ class ResumePdfParser(CandidateParser):
             return None
         if cleaned.endswith((":", ".")):
             cleaned = cleaned[:-1].strip()
+        # Strip trailing parenthetical annotations like '(Primary)', '(Preferred)', '(Advanced)'.
+        cleaned = re.sub(r"\s*\([^)]*\)\s*$", "", cleaned).strip()
         if not cleaned:
             return None
-        if len(cleaned) <= 1:
+        # Allow single uppercase letters (C, R, Go) as they are valid language names.
+        if len(cleaned) == 1:
+            if cleaned.isupper():
+                return cleaned
             return None
         if self._looks_like_sentence(cleaned):
             return None
@@ -641,12 +754,15 @@ class ResumePdfParser(CandidateParser):
         """Return whether a token resembles prose rather than a skill."""
         if not value:
             return False
-        if " " in value:
-            parts = value.split()
-            if all(re.fullmatch(r"[A-Za-z0-9+/.-]+", part) for part in parts):
-                return False
-            return True
-        return not re.fullmatch(r"[A-Za-z0-9+/.-]+", value)
+        if " " not in value:
+            return not re.fullmatch(r"[A-Za-z0-9+/.#_-]+", value)
+        parts = value.split()
+        # Short sequences where every token looks like a tech identifier are allowed.
+        # This covers "REST APIs", "Tailwind CSS", "Apache Kafka", "React.js", etc.
+        _TECH_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9+/.#_-]*$")
+        if len(parts) <= 4 and all(_TECH_TOKEN.match(p) for p in parts):
+            return False
+        return True
 
     def _contains_percent(self, value: str) -> bool:
         """Return whether the token contains a percentage or metric."""
@@ -679,6 +795,15 @@ class ResumePdfParser(CandidateParser):
             return False
         return all(token[:1].isupper() for token in tokens if token)
 
+    def _is_placeholder_value(self, value: str) -> bool:
+        """Return whether a header line is just a separator or punctuation placeholder."""
+        cleaned = value.strip()
+        if not cleaned:
+            return True
+        if cleaned.lower() in {"-", "—", "|", "•", "·", "*", "_"}:
+            return True
+        return not re.search(r"[A-Za-z0-9]", cleaned)
+
     def _looks_like_location(self, value: str) -> bool:
         """Check whether a line resembles a location string."""
         if "@" in value or self._contains_phone_number(value):
@@ -690,6 +815,27 @@ class ResumePdfParser(CandidateParser):
     def _is_contact_line(self, value: str) -> bool:
         """Check whether a line contains likely contact information."""
         return "@" in value or self._contains_phone_number(value) or "|" in value
+
+    def _is_social_link_line(self, value: str) -> bool:
+        """Return True when a line is a social-profile link or decorative URL, not a headline."""
+        normalized = value.strip().lower()
+        # Reject lines that start with a known social-platform label followed by a colon or URL.
+        social_prefixes = (
+            "github",
+            "linkedin",
+            "twitter",
+            "portfolio",
+            "website",
+            "blog",
+            "leetcode",
+            "kaggle",
+        )
+        if any(normalized.startswith(prefix) for prefix in social_prefixes):
+            return True
+        # Reject bare URLs: lines that start with http(s):// or www.
+        if normalized.startswith(("http://", "https://", "www.")):
+            return True
+        return False
 
     def _contains_phone_number(self, value: str) -> bool:
         """Check whether a line contains a recognizable phone number."""
