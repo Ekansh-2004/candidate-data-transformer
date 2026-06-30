@@ -176,20 +176,18 @@ The default output is a clean canonical profile for downstream consumers:
   "emails": ["ada@example.com"],
   "phone_numbers": ["+14155550100"],
   "locations": ["London"],
+  "overall_confidence": 0.85,
   "experience": [
     {
       "company": "Analytical Engines Ltd",
       "title": "Lead Engineer",
-      "start_date": null,
-      "end_date": null,
-      "location": null,
+      "highlights": null,
       "description": "Designed computation workflows"
     }
   ],
   "skills": [
-    {
-      "name": "Python"
-    }
+    "Python",
+    "SQL"
   ]
 }
 ```
