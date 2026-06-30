@@ -25,6 +25,7 @@ class CandidateProjector:
         "experience",
         "education",
         "skills",
+        "overall_confidence",
     )
 
     def __init__(self) -> None:

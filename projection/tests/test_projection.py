@@ -124,7 +124,7 @@ def test_projector_defaults_to_clean_consumer_output() -> None:
 
     projected = CandidateProjector().project(candidate, ProjectionConfig())
 
-    assert projected == {"full_name": "Ada Lovelace"}
+    assert projected == {"full_name": "Ada Lovelace", "overall_confidence": 0.95}
 
 
 def test_projector_omits_empty_values_by_default() -> None:
@@ -133,7 +133,7 @@ def test_projector_omits_empty_values_by_default() -> None:
 
     projected = CandidateProjector().project(candidate, ProjectionConfig())
 
-    assert projected == {"full_name": "Ada Lovelace"}
+    assert projected == {"full_name": "Ada Lovelace", "overall_confidence": 0.0}
 
 
 def test_projector_projects_simple_skills_as_strings_in_clean_output() -> None:

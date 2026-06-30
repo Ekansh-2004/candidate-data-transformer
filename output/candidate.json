@@ -1,88 +1,74 @@
 {
-  "confidence": {
-    "candidate_id": {
-      "level": "high",
-      "reason": "One source provided candidate_id.",
-      "score": 0.75
-    },
-    "education": {
-      "level": "high",
-      "reason": "education values came from single-source observations only.",
-      "score": 0.75
-    },
-    "emails": {
-      "level": "high",
-      "reason": "emails contained 1 repeated value(s) across sources.",
-      "score": 0.95
-    },
-    "experience": {
-      "level": "high",
-      "reason": "experience values came from single-source observations only.",
-      "score": 0.75
-    },
-    "full_name": {
-      "level": "high",
-      "reason": "2 sources agreed on full_name.",
-      "score": 0.95
-    },
-    "headline": {
-      "level": "low",
-      "reason": "No source provided a value for headline.",
-      "score": 0.0
-    },
-    "locations": {
-      "level": "high",
-      "reason": "locations values came from single-source observations only.",
-      "score": 0.75
-    },
-    "phone_numbers": {
-      "level": "high",
-      "reason": "phone_numbers values came from single-source observations only.",
-      "score": 0.75
-    },
-    "skills": {
-      "level": "high",
-      "reason": "skills contained 3 repeated value(s) across sources.",
-      "score": 0.77
-    },
-    "summary": {
-      "level": "high",
-      "reason": "One source provided summary.",
-      "score": 0.75
+  "education": [
+    {
+      "degree": "Bachelor of Technology",
+      "field_of_study": "Computer Science and Engineering",
+      "institution": "The LNM Institute of Information Technology",
+      "location": "Jaipur, India"
     }
-  },
-  "full_name": "Ekansh Chauhan",
-  "phone": "+919808050786",
-  "primary_email": "chauhan.ekansh06@gmail.com",
+  ],
+  "emails": [
+    "wwwkartiksingh121@gmail.com"
+  ],
+  "experience": [
+    {
+      "company": "The LNMIIT",
+      "description": "TAship for PPS, Digital Systems, DBMS, COA, and Computer Networks ◦Student Mentorship: Guided 500+ students across 5 core lab courses, assisting with C/SQL programming, debugging, logic building, and practical system implementations. ◦Evaluation & Support: Evaluated practical submissions, clarified theoretical doubts, and fostered a supportive environment to help juniors confidently approach complex technical concepts.",
+      "highlights": [
+        "TAship for PPS, Digital Systems, DBMS, COA, and Computer Networks",
+        "◦Student Mentorship: Guided 500+ students across 5 core lab courses, assisting with C/SQL programming, debugging,",
+        "logic building, and practical system implementations.",
+        "◦Evaluation & Support: Evaluated practical submissions, clarified theoretical doubts, and fostered a supportive",
+        "environment to help juniors confidently approach complex technical concepts."
+      ],
+      "title": "Teaching Assistant - Core CS Lab Courses"
+    },
+    {
+      "company": "The LNMIIT",
+      "description": "Led communication, sponsorship, and team management for the annual sports fest ◦Leadership & Execution: Spearheaded a PR team of 50+ members to successfully organize Desportivos 2026, driving 750+ players participation from colleges across India. ◦Sponsorship & Outreach: Directed sponsorship drives to secure funds, managed official announcements, and trained a junior team to build external college connections.",
+      "highlights": [
+        "Led communication, sponsorship, and team management for the annual sports fest",
+        "◦Leadership & Execution: Spearheaded a PR team of 50+ members to successfully organize Desportivos 2026, driving",
+        "750+ players participation from colleges across India.",
+        "◦Sponsorship & Outreach: Directed sponsorship drives to secure funds, managed official announcements, and trained a",
+        "junior team to build external college connections."
+      ],
+      "title": "PR Head - Desportivos (College Sports Fest)"
+    },
+    {
+      "company": "The LNMIIT",
+      "description": "Contributed to literary culture and event organization ◦Event Coordination: Organized open mics, writing contests, and debates to promote student participation in campus literary activities.",
+      "highlights": [
+        "Contributed to literary culture and event organization",
+        "◦Event Coordination: Organized open mics, writing contests, and debates to promote student participation in campus",
+        "literary activities."
+      ],
+      "title": "Core Member - Literary Committee"
+    }
+  ],
+  "full_name": "Kartik Singh",
+  "overall_confidence": 0.53,
+  "phone_numbers": [
+    "+917651965230"
+  ],
   "skills": [
-    "Agentic AI",
+    "Apache Kafka",
     "C",
-    "C++",
-    "ChromaDB",
-    "Data Structures and Algorithms",
-    "Express.js",
-    "FAISS",
-    "FastAPI",
+    "Docker",
     "Git",
     "GitHub",
-    "JavaScript",
-    "JWT",
-    "LangChain",
-    "LangGraph",
-    "MongoDB",
-    "MySQL",
-    "Node.js",
-    "Ollama",
-    "Postman",
-    "Python",
-    "React.js",
-    "Redux Toolkit",
+    "Java",
+    "Leadership",
+    "Mentorship",
+    "Microservices Architecture",
+    "pgvector",
+    "PostgreSQL",
+    "Project Management",
+    "Public Speaking",
+    "Redis",
     "REST APIs",
-    "Retrieval-Augmented Generation",
-    "SQL",
-    "SQLite",
-    "Stripe",
-    "System Design",
-    "Tailwind CSS"
-  ]
+    "Spring Boot",
+    "SQL"
+  ],
+  "summary": "Backend engineer focused on building clean, reliable distributed systems with Java and Spring Boot. Experienced in setting up event-driven architectures using Apache Kafka and resolving complex concurrency and performance bottlenecks with Redis. I also enjoy bridging the gap between traditional backend systems and modern AI, having built intelligent pipelines using LLMs and vector databases like pgvector. • Languages: Java (Primary), C, SQL • Core Competencies: Data Structures & Algorithms (DSA), Object-Oriented Programming (OOP), Distributed Systems • Frameworks: Spring Boot, Microservices Architecture, REST APIs • Databases & Tools: PostgreSQL, Redis, Apache Kafka, Docker, Git, GitHub, pgvector"
 }

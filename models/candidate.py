@@ -71,6 +71,12 @@ class Candidate(BaseModel):
         description="Optional provenance entries keyed by canonical field path.",
     )
 
+    @property
+    def overall_confidence(self) -> float:
+        """Calculate the average confidence score across all populated fields."""
+        scores = [c.score for c in self.confidence.values() if c.score is not None]
+        return round(sum(scores) / len(scores), 2) if scores else 0.0
+
     @field_validator("emails")
     @classmethod
     def validate_emails(cls, values: list[str]) -> list[str]:
