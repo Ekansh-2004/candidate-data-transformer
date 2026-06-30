@@ -21,14 +21,14 @@ class ProjectionConfig(BaseModel):
         description="Optional top-level output key aliases keyed by canonical field name.",
     )
     include_confidence: bool = Field(
-        default=True,
+        default=False,
         description="Whether projected output should include top-level confidence data.",
     )
     include_provenance: bool = Field(
-        default=True,
+        default=False,
         description="Whether projected output should include top-level provenance data.",
     )
     include_nested_provenance: bool = Field(
-        default=True,
+        default=False,
         description="Whether nested experience, education, and skills should include provenance.",
     )

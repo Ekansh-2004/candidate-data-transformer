@@ -40,12 +40,16 @@ class CandidateProjector:
         if config.include_confidence:
             confidence_payload = self._project_confidence(candidate)
             if self._should_include_value(confidence_payload, config):
-                projected[config.field_aliases.get("confidence", "confidence")] = confidence_payload
+                projected[config.field_aliases.get("confidence", "confidence")] = (
+                    confidence_payload
+                )
 
         if config.include_provenance:
             provenance_payload = self._project_top_level_provenance(candidate)
             if self._should_include_value(provenance_payload, config):
-                projected[config.field_aliases.get("provenance", "provenance")] = provenance_payload
+                projected[config.field_aliases.get("provenance", "provenance")] = (
+                    provenance_payload
+                )
 
         return projected
 
@@ -80,14 +84,19 @@ class CandidateProjector:
         if config.include_confidence and experience.confidence is not None:
             payload["confidence"] = self._serialize_confidence(experience.confidence)
         if config.include_nested_provenance and experience.provenance:
-            payload["provenance"] = [self._serialize_provenance(item) for item in experience.provenance]
+            payload["provenance"] = [
+                self._serialize_provenance(item) for item in experience.provenance
+            ]
         return self._drop_empty_values(payload, config)
 
-    def _project_education(self, education: Education, config: ProjectionConfig) -> dict[str, Any]:
+    def _project_education(
+        self, education: Education, config: ProjectionConfig
+    ) -> dict[str, Any]:
         """Project one education entry."""
         payload = {
             "institution": education.institution,
             "degree": education.degree,
+            "location": education.location,
             "field_of_study": education.field_of_study,
             "start_date": self._serialize_date(education.start_date),
             "end_date": self._serialize_date(education.end_date),
@@ -96,7 +105,9 @@ class CandidateProjector:
         if config.include_confidence and education.confidence is not None:
             payload["confidence"] = self._serialize_confidence(education.confidence)
         if config.include_nested_provenance and education.provenance:
-            payload["provenance"] = [self._serialize_provenance(item) for item in education.provenance]
+            payload["provenance"] = [
+                self._serialize_provenance(item) for item in education.provenance
+            ]
         return self._drop_empty_values(payload, config)
 
     def _project_skill(self, skill: Skill, config: ProjectionConfig) -> dict[str, Any]:
@@ -109,7 +120,9 @@ class CandidateProjector:
         if config.include_confidence and skill.confidence is not None:
             payload["confidence"] = self._serialize_confidence(skill.confidence)
         if config.include_nested_provenance and skill.provenance:
-            payload["provenance"] = [self._serialize_provenance(item) for item in skill.provenance]
+            payload["provenance"] = [
+                self._serialize_provenance(item) for item in skill.provenance
+            ]
         return self._drop_empty_values(payload, config)
 
     def _project_confidence(self, candidate: Candidate) -> dict[str, Any]:
@@ -153,7 +166,9 @@ class CandidateProjector:
             return None
         return value.isoformat()
 
-    def _drop_empty_values(self, payload: dict[str, Any], config: ProjectionConfig) -> dict[str, Any]:
+    def _drop_empty_values(
+        self, payload: dict[str, Any], config: ProjectionConfig
+    ) -> dict[str, Any]:
         """Remove empty and null values when configured to do so."""
         if config.output.include_empty_fields:
             return payload

@@ -6,7 +6,15 @@ import json
 from datetime import date
 from pathlib import Path
 
-from models import Candidate, Confidence, Education, Experience, Provenance, Skill, SourceType
+from models import (
+    Candidate,
+    Confidence,
+    Education,
+    Experience,
+    Provenance,
+    Skill,
+    SourceType,
+)
 from projection import CandidateProjector, ProjectionConfig, ProjectionConfigLoader
 
 
@@ -80,7 +88,9 @@ def test_projector_projects_canonical_candidate_into_output_schema() -> None:
                 provenance=[_make_provenance("skills")],
             )
         ],
-        confidence={"full_name": Confidence(score=0.95, level="high", reason="Matched")},
+        confidence={
+            "full_name": Confidence(score=0.95, level="high", reason="Matched")
+        },
         provenance={"full_name": [_make_provenance("full_name")]},
     )
     config = ProjectionConfig(
@@ -100,6 +110,21 @@ def test_projector_projects_canonical_candidate_into_output_schema() -> None:
     assert projected["skills"][0]["years_experience"] == 5.0
     assert projected["confidence"]["full_name"]["level"] == "high"
     assert projected["provenance"]["full_name"][0]["source_name"] == "recruiter.csv"
+
+
+def test_projector_defaults_to_clean_consumer_output() -> None:
+    """Default projection should omit confidence and provenance for consumer-facing output."""
+    candidate = Candidate(
+        full_name="Ada Lovelace",
+        confidence={
+            "full_name": Confidence(score=0.95, level="high", reason="Matched")
+        },
+        provenance={"full_name": [_make_provenance("full_name")]},
+    )
+
+    projected = CandidateProjector().project(candidate, ProjectionConfig())
+
+    assert projected == {"full_name": "Ada Lovelace"}
 
 
 def test_projector_omits_empty_values_by_default() -> None:
@@ -130,7 +155,9 @@ def test_projector_can_hide_confidence_and_provenance_sections() -> None:
     """Projection flags should control confidence and provenance visibility."""
     candidate = Candidate(
         full_name="Ada Lovelace",
-        confidence={"full_name": Confidence(score=0.75, level="high", reason="Matched")},
+        confidence={
+            "full_name": Confidence(score=0.75, level="high", reason="Matched")
+        },
         provenance={"full_name": [_make_provenance("full_name")]},
     )
     config = ProjectionConfig(

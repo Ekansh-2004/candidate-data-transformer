@@ -1,0 +1,118 @@
+{
+  "candidate_id": "cand001",
+  "education": [
+    {
+      "degree": "Bachelor of Technology",
+      "end_date": "2027-06-01",
+      "field_of_study": "Computer Science and Engineering — CGPA: 9.36/10",
+      "institution": "The LNM Institute of Information Technology",
+      "location": "Jaipur, India",
+      "start_date": "2023-07-01"
+    }
+  ],
+  "emails": [
+    "ekansh@example.com",
+    "chauhan.ekansh06@gmail.com"
+  ],
+  "experience": [
+    {
+      "company": "Student",
+      "title": "Software Developer Intern"
+    }
+  ],
+  "full_name": "Ekansh Chauhan",
+  "headline": "—",
+  "locations": [
+    "India"
+  ],
+  "phone_numbers": [
+    "+919808050786"
+  ],
+  "skills": [
+    {
+      "name": "Agentic Ai"
+    },
+    {
+      "name": "C++"
+    },
+    {
+      "name": "Chromadb"
+    },
+    {
+      "name": "Data Structures And Algorithms"
+    },
+    {
+      "name": "Express.Js"
+    },
+    {
+      "name": "FAISS"
+    },
+    {
+      "name": "Fastapi"
+    },
+    {
+      "name": "Git"
+    },
+    {
+      "name": "Github"
+    },
+    {
+      "name": "Javascript"
+    },
+    {
+      "name": "JWT"
+    },
+    {
+      "name": "Langchain"
+    },
+    {
+      "name": "Langgraph"
+    },
+    {
+      "name": "Mongodb"
+    },
+    {
+      "name": "Mysql"
+    },
+    {
+      "name": "Node.js"
+    },
+    {
+      "name": "Ollama"
+    },
+    {
+      "name": "Postman"
+    },
+    {
+      "name": "Python"
+    },
+    {
+      "name": "React"
+    },
+    {
+      "name": "React.Js"
+    },
+    {
+      "name": "Redux Toolkit"
+    },
+    {
+      "name": "Rest Apis"
+    },
+    {
+      "name": "SQL"
+    },
+    {
+      "name": "Sqlite"
+    },
+    {
+      "name": "Stripe"
+    },
+    {
+      "name": "System Design"
+    },
+    {
+      "name": "Tailwind Css"
+    }
+  ],
+  "summary": "Results-driven software developer with hands-on experience in full-stack software development and AI systems. Proficient in designing and delivering scalable REST API backends and production-grade RAG-based applications. Adept at end-to-end software development lifecycle from system design and implementation to testing and optimization. Strong foundation in data structures, algorithms, and object-oriented programming with a track record of measurable performance improvements across academic and independent software"
+}

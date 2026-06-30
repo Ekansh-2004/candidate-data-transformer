@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -106,6 +107,161 @@ def test_parse_resume_supports_fuzzy_section_headers(tmp_path: Path) -> None:
     assert candidate.experience[0].title == "Director"
 
 
+def test_parse_resume_extracts_skills_only_from_skills_section(tmp_path: Path) -> None:
+    """The parser should only extract skills from the dedicated skills section and ignore other prose."""
+    pdf_path = tmp_path / "skills_section_resume.pdf"
+    _create_pdf(
+        pdf_path,
+        [
+            "Jane Doe",
+            "Software Engineer",
+            "jane@example.com",
+            "",
+            "Technical Skills",
+            "Languages: Python, Java, Python",
+            "Frameworks & Libraries: Django, React",
+            "Databases: PostgreSQL, MySQL",
+            "Tools & Platforms: Git, Docker",
+            "Concepts: REST APIs, Microservices",
+            "",
+            "Projects",
+            "Smart Inventory Platform",
+            "Built an inventory platform that improved speed by 95%.",
+            "",
+            "Achievements",
+            "Won the innovation award for reducing latency by 40%.",
+        ],
+    )
+
+    candidate = ResumePdfParser().parse(pdf_path)
+
+    assert [skill.name for skill in candidate.skills] == [
+        "Python",
+        "Java",
+        "Django",
+        "React",
+        "PostgreSQL",
+        "MySQL",
+        "Git",
+        "Docker",
+        "REST APIs",
+        "Microservices",
+    ]
+
+
+@pytest.mark.parametrize(
+    (
+        "lines",
+        "expected_institution",
+        "expected_degree",
+        "expected_location",
+        "expected_grade",
+        "expected_start",
+        "expected_end",
+    ),
+    [
+        (
+            [
+                "The LNM Institute of Information Technology",
+                "Jaipur, India",
+                "Bachelor of Technology in Computer Science and Engineering",
+                "CGPA: 9.36/10",
+                "July 2023 - June 2027",
+            ],
+            "The LNM Institute of Information Technology",
+            "Bachelor of Technology",
+            "Jaipur, India",
+            "CGPA: 9.36/10",
+            "2023-07-01",
+            "2027-06-01",
+        ),
+        (
+            [
+                "University of London",
+                "London, UK",
+                "BSc in Mathematics",
+                "GPA: 3.9",
+                "2015 - 2019",
+            ],
+            "University of London",
+            "BSc",
+            "London, UK",
+            "GPA: 3.9",
+            "2015-01-01",
+            "2019-01-01",
+        ),
+        (
+            [
+                "Massachusetts Institute of Technology | Cambridge, MA, USA",
+                "M.S. in Computer Science",
+                "GPA: 4.0",
+                "2019 - 2021",
+            ],
+            "Massachusetts Institute of Technology",
+            "M.S.",
+            "Cambridge, MA, USA",
+            "GPA: 4.0",
+            "2019-01-01",
+            "2021-01-01",
+        ),
+        (
+            [
+                "Indian Institute of Technology",
+                "Mumbai, India",
+                "B.Tech in Electrical Engineering",
+                "Percentage: 86%",
+                "2018 - 2022",
+            ],
+            "Indian Institute of Technology",
+            "B.Tech",
+            "Mumbai, India",
+            "Percentage: 86%",
+            "2018-01-01",
+            "2022-01-01",
+        ),
+        (
+            [
+                "Stanford University",
+                "Palo Alto, CA",
+                "Bachelor of Science, Computer Engineering",
+                "Grade: A",
+                "2014 - 2018",
+            ],
+            "Stanford University",
+            "Bachelor of Science",
+            "Palo Alto, CA",
+            "Grade: A",
+            "2014-01-01",
+            "2018-01-01",
+        ),
+    ],
+)
+def test_parse_resume_extracts_education_fields_across_layouts(
+    tmp_path: Path,
+    lines: list[str],
+    expected_institution: str,
+    expected_degree: str,
+    expected_location: str,
+    expected_grade: str,
+    expected_start: str,
+    expected_end: str,
+) -> None:
+    """The parser should separate institution, location, degree, grade, and dates across common layouts."""
+    pdf_path = tmp_path / "education_layout.pdf"
+    _create_pdf(pdf_path, ["Jane Doe", "", "Education", *lines])
+
+    candidate = ResumePdfParser().parse(pdf_path)
+
+    assert len(candidate.education) == 1
+    education = candidate.education[0]
+    assert education.institution == expected_institution
+    assert education.degree == expected_degree
+    assert education.location == expected_location
+    assert education.grade == expected_grade
+    assert education.start_date == date.fromisoformat(expected_start)
+    assert education.end_date == date.fromisoformat(expected_end)
+
+
 def test_parse_resume_handles_missing_sections_gracefully(tmp_path: Path) -> None:
     """The parser should return a partial candidate when sections are absent."""
     pdf_path = tmp_path / "minimal_resume.pdf"
@@ -175,7 +331,9 @@ def test_parse_resume_returns_empty_candidate_for_blank_pdf(tmp_path: Path) -> N
     }
 
 
-def test_parse_resume_logs_pdf_open_failures(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+def test_parse_resume_logs_pdf_open_failures(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
     """The parser should log extraction failures before re-raising the error."""
     pdf_path = tmp_path / "not_a_pdf.pdf"
     pdf_path.write_text("plain text, not a valid PDF", encoding="utf-8")

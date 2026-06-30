@@ -107,6 +107,44 @@ def test_orchestrator_runs_full_pipeline_and_writes_json_output(tmp_path: Path) 
     assert payload["name"] == "Ada Lovelace"
 
 
+def test_orchestrator_writes_debug_payload_when_requested(tmp_path: Path) -> None:
+    """The orchestrator should write a clean payload by default and a verbose payload when debug mode is enabled."""
+    csv_path = tmp_path / "candidate.csv"
+    resume_path = tmp_path / "resume.pdf"
+    output_path = tmp_path / "output" / "candidate.json"
+    debug_output_path = tmp_path / "output" / "candidate.debug.json"
+
+    csv_path.write_text(
+        "candidate_id,full_name,email,skills\n"
+        "cand-003,Grace Hopper,grace@example.com,COBOL\n",
+        encoding="utf-8",
+    )
+    _create_pdf(
+        resume_path,
+        ["Grace Hopper", "grace@example.com", "", "Technical Skills", "COBOL"],
+    )
+
+    orchestrator = CandidateTransformationOrchestrator()
+    payload = orchestrator.run(
+        csv_path=csv_path,
+        resume_path=resume_path,
+        output_path=output_path,
+        debug_mode=True,
+        debug_output_path=debug_output_path,
+    )
+
+    assert output_path.exists()
+    assert debug_output_path.exists()
+    assert payload["full_name"] == "Grace Hopper"
+    assert "confidence" not in payload
+    assert "provenance" not in payload
+
+    debug_payload = json.loads(debug_output_path.read_text(encoding="utf-8"))
+    assert debug_payload["full_name"] == "Grace Hopper"
+    assert "confidence" in debug_payload
+    assert "provenance" in debug_payload
+
+
 def test_orchestrator_rejects_directory_inputs(tmp_path: Path) -> None:
     """The orchestrator should reject directory paths before attempting file reads."""
     csv_dir = tmp_path / "csv_inputs"

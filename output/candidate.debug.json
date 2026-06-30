@@ -1,0 +1,1244 @@
+{
+  "candidate_id": "cand001",
+  "confidence": {
+    "candidate_id": {
+      "level": "high",
+      "reason": "One source provided candidate_id.",
+      "score": 0.75
+    },
+    "education": {
+      "level": "high",
+      "reason": "education values came from single-source observations only.",
+      "score": 0.75
+    },
+    "emails": {
+      "level": "high",
+      "reason": "emails values came from single-source observations only.",
+      "score": 0.75
+    },
+    "experience": {
+      "level": "high",
+      "reason": "experience values came from single-source observations only.",
+      "score": 0.75
+    },
+    "full_name": {
+      "level": "high",
+      "reason": "2 sources agreed on full_name.",
+      "score": 0.95
+    },
+    "headline": {
+      "level": "high",
+      "reason": "One source provided headline.",
+      "score": 0.75
+    },
+    "locations": {
+      "level": "high",
+      "reason": "locations values came from single-source observations only.",
+      "score": 0.75
+    },
+    "phone_numbers": {
+      "level": "high",
+      "reason": "phone_numbers values came from single-source observations only.",
+      "score": 0.75
+    },
+    "skills": {
+      "level": "high",
+      "reason": "skills contained 2 repeated value(s) across sources.",
+      "score": 0.76
+    },
+    "summary": {
+      "level": "high",
+      "reason": "One source provided summary.",
+      "score": 0.75
+    }
+  },
+  "education": [
+    {
+      "degree": "Bachelor of Technology",
+      "end_date": "2027-06-01",
+      "field_of_study": "Computer Science and Engineering — CGPA: 9.36/10",
+      "institution": "The LNM Institute of Information Technology",
+      "location": "Jaipur, India",
+      "provenance": [
+        {
+          "extracted_value": "The LNM Institute of Information Technology | Jaipur, India | Bachelor of Technology in Computer Science and Engineering — CGPA: 9.36/10 | July 2023 – June 2027 | ◦Relevant Coursework: Data Structures and Algorithms, Operating Systems, Object-Oriented Programming, Computer | Networks, Database Management Systems, Analysis of Algorithms",
+          "field_path": "education",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "education",
+          "notes": "Merged education 'The LNM Institute of Information Technology' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ],
+      "start_date": "2023-07-01"
+    }
+  ],
+  "emails": [
+    "ekansh@example.com",
+    "chauhan.ekansh06@gmail.com"
+  ],
+  "experience": [
+    {
+      "company": "Student",
+      "provenance": [
+        {
+          "extracted_value": "Student | Software Developer Intern",
+          "field_path": "experience",
+          "source_file": "recruiter.csv",
+          "source_name": "recruiter.csv",
+          "source_record_id": "cand001",
+          "source_type": "recruiter_csv"
+        },
+        {
+          "field_path": "experience",
+          "notes": "Merged experience 'Software Developer Intern' at 'Student' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ],
+      "title": "Software Developer Intern"
+    }
+  ],
+  "full_name": "Ekansh Chauhan",
+  "headline": "—",
+  "locations": [
+    "India"
+  ],
+  "phone_numbers": [
+    "+919808050786"
+  ],
+  "provenance": {
+    "candidate_id": [
+      {
+        "extracted_value": "cand001",
+        "field_path": "candidate_id",
+        "source_file": "recruiter.csv",
+        "source_name": "recruiter.csv",
+        "source_record_id": "cand001",
+        "source_type": "recruiter_csv"
+      },
+      {
+        "field_path": "candidate_id",
+        "notes": "Merged scalar field 'candidate_id' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "education": [
+      {
+        "extracted_value": "The LNM Institute of Information Technology | Jaipur, India | Bachelor of Technology in Computer Science and Engineering — CGPA: 9.36/10 | July 2023 – June 2027 | ◦Relevant Coursework: Data Structures and Algorithms, Operating Systems, Object-Oriented Programming, Computer | Networks, Database Management Systems, Analysis of Algorithms",
+        "field_path": "education",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "education",
+        "notes": "Merged education 'The LNM Institute of Information Technology' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "emails": [
+      {
+        "extracted_value": "ekansh@example.com",
+        "field_path": "emails",
+        "source_file": "recruiter.csv",
+        "source_name": "recruiter.csv",
+        "source_record_id": "cand001",
+        "source_type": "recruiter_csv"
+      },
+      {
+        "extracted_value": "chauhan.ekansh06@gmail.com",
+        "field_path": "emails",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "emails",
+        "notes": "Merged collection field 'emails' into 2 unique value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "experience": [
+      {
+        "extracted_value": "Student | Software Developer Intern",
+        "field_path": "experience",
+        "source_file": "recruiter.csv",
+        "source_name": "recruiter.csv",
+        "source_record_id": "cand001",
+        "source_type": "recruiter_csv"
+      },
+      {
+        "field_path": "experience",
+        "notes": "Merged experience 'Software Developer Intern' at 'Student' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "full_name": [
+      {
+        "extracted_value": "Ekansh Chauhan",
+        "field_path": "full_name",
+        "source_file": "recruiter.csv",
+        "source_name": "recruiter.csv",
+        "source_record_id": "cand001",
+        "source_type": "recruiter_csv"
+      },
+      {
+        "extracted_value": "Ekansh Chauhan",
+        "field_path": "full_name",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "full_name",
+        "notes": "Merged scalar field 'full_name' from 2 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "headline": [
+      {
+        "extracted_value": "—",
+        "field_path": "headline",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "headline",
+        "notes": "Merged scalar field 'headline' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "locations": [
+      {
+        "extracted_value": "India",
+        "field_path": "locations",
+        "source_file": "recruiter.csv",
+        "source_name": "recruiter.csv",
+        "source_record_id": "cand001",
+        "source_type": "recruiter_csv"
+      },
+      {
+        "field_path": "locations",
+        "notes": "Merged collection field 'locations' into 1 unique value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "phone_numbers": [
+      {
+        "extracted_value": "+91-9808050786",
+        "field_path": "phone_numbers",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "phone_numbers",
+        "notes": "Merged collection field 'phone_numbers' into 1 unique value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "skills": [
+      {
+        "extracted_value": "Agentic AI",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Agentic Ai' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "C++",
+        "field_path": "skills",
+        "source_file": "recruiter.csv",
+        "source_name": "recruiter.csv",
+        "source_record_id": "cand001",
+        "source_type": "recruiter_csv"
+      },
+      {
+        "extracted_value": "C++",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'C++' from 2 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "ChromaDB",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Chromadb' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Data Structures and Algorithms",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Data Structures And Algorithms' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Express.js",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Express.Js' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "FAISS",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'FAISS' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "FastAPI",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Fastapi' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Git",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Git' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "GitHub",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Github' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "JavaScript",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Javascript' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "JWT",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'JWT' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "LangChain",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Langchain' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "LangGraph",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Langgraph' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "MongoDB",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Mongodb' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "MySQL",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Mysql' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Node.js",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Node.js' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Ollama",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Ollama' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Postman",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Postman' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Python",
+        "field_path": "skills",
+        "source_file": "recruiter.csv",
+        "source_name": "recruiter.csv",
+        "source_record_id": "cand001",
+        "source_type": "recruiter_csv"
+      },
+      {
+        "extracted_value": "Python",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Python' from 2 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "React",
+        "field_path": "skills",
+        "source_file": "recruiter.csv",
+        "source_name": "recruiter.csv",
+        "source_record_id": "cand001",
+        "source_type": "recruiter_csv"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'React' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "React.js",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'React.Js' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Redux Toolkit",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Redux Toolkit' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "REST APIs",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Rest Apis' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "SQL",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'SQL' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "SQLite",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Sqlite' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Stripe",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Stripe' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "System Design",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'System Design' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      },
+      {
+        "extracted_value": "Tailwind CSS",
+        "field_path": "skills",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "skills",
+        "notes": "Merged skill 'Tailwind Css' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ],
+    "summary": [
+      {
+        "extracted_value": "Results-driven software developer with hands-on experience in full-stack software development and AI systems. Proficient in designing and delivering scalable REST API backends and production-grade RAG-based applications. Adept at end-to-end software development lifecycle from system design and implementation to testing and optimization. Strong foundation in data structures, algorithms, and object-oriented programming with a track record of measurable performance improvements across academic and independent software",
+        "field_path": "summary",
+        "source_file": "Ekansh_Resume.pdf",
+        "source_name": "Ekansh_Resume.pdf",
+        "source_type": "resume_pdf"
+      },
+      {
+        "field_path": "summary",
+        "notes": "Merged scalar field 'summary' from 1 source value(s).",
+        "source_file": "candidate_merger",
+        "source_name": "candidate_merger",
+        "source_type": "derived"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "name": "Agentic Ai",
+      "provenance": [
+        {
+          "extracted_value": "Agentic AI",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Agentic Ai' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "C++",
+      "provenance": [
+        {
+          "extracted_value": "C++",
+          "field_path": "skills",
+          "source_file": "recruiter.csv",
+          "source_name": "recruiter.csv",
+          "source_record_id": "cand001",
+          "source_type": "recruiter_csv"
+        },
+        {
+          "extracted_value": "C++",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'C++' from 2 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Chromadb",
+      "provenance": [
+        {
+          "extracted_value": "ChromaDB",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Chromadb' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Data Structures And Algorithms",
+      "provenance": [
+        {
+          "extracted_value": "Data Structures and Algorithms",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Data Structures And Algorithms' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Express.Js",
+      "provenance": [
+        {
+          "extracted_value": "Express.js",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Express.Js' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "FAISS",
+      "provenance": [
+        {
+          "extracted_value": "FAISS",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'FAISS' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Fastapi",
+      "provenance": [
+        {
+          "extracted_value": "FastAPI",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Fastapi' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Git",
+      "provenance": [
+        {
+          "extracted_value": "Git",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Git' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Github",
+      "provenance": [
+        {
+          "extracted_value": "GitHub",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Github' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Javascript",
+      "provenance": [
+        {
+          "extracted_value": "JavaScript",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Javascript' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "JWT",
+      "provenance": [
+        {
+          "extracted_value": "JWT",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'JWT' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Langchain",
+      "provenance": [
+        {
+          "extracted_value": "LangChain",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Langchain' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Langgraph",
+      "provenance": [
+        {
+          "extracted_value": "LangGraph",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Langgraph' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Mongodb",
+      "provenance": [
+        {
+          "extracted_value": "MongoDB",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Mongodb' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Mysql",
+      "provenance": [
+        {
+          "extracted_value": "MySQL",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Mysql' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Node.js",
+      "provenance": [
+        {
+          "extracted_value": "Node.js",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Node.js' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Ollama",
+      "provenance": [
+        {
+          "extracted_value": "Ollama",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Ollama' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Postman",
+      "provenance": [
+        {
+          "extracted_value": "Postman",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Postman' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Python",
+      "provenance": [
+        {
+          "extracted_value": "Python",
+          "field_path": "skills",
+          "source_file": "recruiter.csv",
+          "source_name": "recruiter.csv",
+          "source_record_id": "cand001",
+          "source_type": "recruiter_csv"
+        },
+        {
+          "extracted_value": "Python",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Python' from 2 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "React",
+      "provenance": [
+        {
+          "extracted_value": "React",
+          "field_path": "skills",
+          "source_file": "recruiter.csv",
+          "source_name": "recruiter.csv",
+          "source_record_id": "cand001",
+          "source_type": "recruiter_csv"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'React' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "React.Js",
+      "provenance": [
+        {
+          "extracted_value": "React.js",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'React.Js' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Redux Toolkit",
+      "provenance": [
+        {
+          "extracted_value": "Redux Toolkit",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Redux Toolkit' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Rest Apis",
+      "provenance": [
+        {
+          "extracted_value": "REST APIs",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Rest Apis' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "SQL",
+      "provenance": [
+        {
+          "extracted_value": "SQL",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'SQL' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Sqlite",
+      "provenance": [
+        {
+          "extracted_value": "SQLite",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Sqlite' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Stripe",
+      "provenance": [
+        {
+          "extracted_value": "Stripe",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Stripe' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "System Design",
+      "provenance": [
+        {
+          "extracted_value": "System Design",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'System Design' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    },
+    {
+      "name": "Tailwind Css",
+      "provenance": [
+        {
+          "extracted_value": "Tailwind CSS",
+          "field_path": "skills",
+          "source_file": "Ekansh_Resume.pdf",
+          "source_name": "Ekansh_Resume.pdf",
+          "source_type": "resume_pdf"
+        },
+        {
+          "field_path": "skills",
+          "notes": "Merged skill 'Tailwind Css' from 1 source value(s).",
+          "source_file": "candidate_merger",
+          "source_name": "candidate_merger",
+          "source_type": "derived"
+        }
+      ]
+    }
+  ],
+  "summary": "Results-driven software developer with hands-on experience in full-stack software development and AI systems. Proficient in designing and delivering scalable REST API backends and production-grade RAG-based applications. Adept at end-to-end software development lifecycle from system design and implementation to testing and optimization. Strong foundation in data structures, algorithms, and object-oriented programming with a track record of measurable performance improvements across academic and independent software"
+}

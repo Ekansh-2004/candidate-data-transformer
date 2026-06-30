@@ -91,20 +91,26 @@ Run the CLI with a recruiter CSV file and a resume PDF file:
 python main.py path/to/candidate.csv path/to/resume.pdf
 ```
 
+By default, the pipeline writes a clean consumer-facing JSON payload containing only the canonical candidate profile. Confidence, provenance, and extraction details are omitted unless you request verbose debug output.
+
 Optional arguments:
 
 ```bash
 python main.py path/to/candidate.csv path/to/resume.pdf \
   --output output/candidate.json \
-  --projection-config path/to/projection.json
+  --projection-config path/to/projection.json \
+  --debug \
+  --debug-output output/candidate.debug.json
 ```
 
 The implemented CLI arguments are:
 
 - `csv_path` (required positional argument)
 - `resume_path` (required positional argument)
-- `--output` (optional output file path)
+- `--output` (optional output file path for the clean JSON payload)
 - `--projection-config` (optional projection configuration JSON file)
+- `--debug` (write a separate verbose JSON payload with confidence, provenance, and extraction metadata)
+- `--debug-output` (optional file path for the verbose debug payload)
 
 ## Configuration
 
@@ -154,12 +160,12 @@ Expected resume input:
 
 ## Sample Output
 
-Example JSON output produced by the current implementation:
+The default output is a clean canonical profile for downstream consumers:
 
 ```json
 {
   "candidate_id": "cand-001",
-  "name": "Ada Lovelace",
+  "full_name": "Ada Lovelace",
   "headline": "Staff Engineer",
   "emails": ["ada@example.com"],
   "phone_numbers": ["+14155550100"],
@@ -178,32 +184,18 @@ Example JSON output produced by the current implementation:
     {
       "name": "Python"
     }
-  ],
-  "confidence": {
-    "full_name": {
-      "score": 0.95,
-      "level": "high",
-      "reason": "Multiple sources agreed on full_name."
-    }
-  },
-  "provenance": {
-    "full_name": [
-      {
-        "source_type": "recruiter_csv",
-        "source_name": "candidate.csv",
-        "field_path": "full_name"
-      }
-    ]
-  }
+  ]
 }
 ```
+
+When `--debug` is enabled, the pipeline also writes a separate verbose payload that includes confidence, provenance, and other extraction metadata.
 
 ## Design Decisions
 
 - A canonical candidate model is used so all parsers produce the same structure and downstream stages can operate consistently.
 - The pipeline is modular so each stage is easy to test and extend independently.
 - Deterministic rule-based parsing was chosen to keep the project fully offline and explainable without relying on external services or machine learning.
-- Provenance and confidence data are preserved to make merge outcomes and extracted values understandable to downstream users.
+- The default projection keeps the output clean and consumer-facing, while optional debug output retains provenance and confidence data for investigation and troubleshooting.
 
 ## Testing
 

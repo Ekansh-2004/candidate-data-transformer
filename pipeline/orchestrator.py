@@ -36,6 +36,8 @@ class CandidateTransformationOrchestrator:
         resume_path: str | Path,
         output_path: str | Path | None = None,
         projection_config_path: str | Path | None = None,
+        debug_mode: bool = False,
+        debug_output_path: str | Path | None = None,
     ) -> dict[str, Any]:
         """Execute the full pipeline and write the projected JSON payload to disk."""
         try:
@@ -65,6 +67,29 @@ class CandidateTransformationOrchestrator:
 
             output_target = self._resolve_output_path(output_path, projection_config)
             self._write_output(validated_payload, output_target, projection_config)
+
+            if debug_mode:
+                debug_payload = self.projector.project(
+                    merged_candidate,
+                    projection_config.model_copy(
+                        update={
+                            "include_confidence": True,
+                            "include_provenance": True,
+                            "include_nested_provenance": True,
+                        }
+                    ),
+                )
+                debug_validated_payload = validate_output_payload(debug_payload)
+                debug_target = self._resolve_output_path(
+                    debug_output_path or self._build_debug_output_path(output_path),
+                    projection_config,
+                )
+                self._write_output(
+                    debug_validated_payload,
+                    debug_target,
+                    projection_config,
+                )
+
             LOGGER.info("Candidate transformation pipeline completed successfully")
             return validated_payload
         except (FileNotFoundError, ValueError) as exc:
@@ -122,6 +147,17 @@ class CandidateTransformationOrchestrator:
         target_path = Path(output_path)
         target_path.parent.mkdir(parents=True, exist_ok=True)
         return target_path
+
+    def _build_debug_output_path(self, output_path: str | Path | None) -> Path:
+        """Return a sensible default path for verbose debug output."""
+        base_path = (
+            Path(output_path)
+            if output_path is not None
+            else Path("output/candidate.json")
+        )
+        if base_path.suffix:
+            return base_path.with_name(f"{base_path.stem}.debug{base_path.suffix}")
+        return base_path.with_name(f"{base_path.name}.debug")
 
     def _write_output(
         self,

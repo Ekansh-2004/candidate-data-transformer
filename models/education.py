@@ -15,11 +15,18 @@ class Education(BaseModel):
 
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
-    institution: str = Field(..., min_length=1, description="School or university name.")
+    institution: str = Field(
+        ..., min_length=1, description="School or university name."
+    )
     degree: str | None = Field(
         default=None,
         min_length=1,
         description="Optional degree name, such as B.Tech or M.S.",
+    )
+    location: str | None = Field(
+        default=None,
+        min_length=1,
+        description="Optional location associated with the education entry.",
     )
     field_of_study: str | None = Field(
         default=None,

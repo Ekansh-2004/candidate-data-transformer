@@ -23,6 +23,16 @@ def run(
         "--projection-config",
         help="Optional JSON file containing projection settings.",
     ),
+    debug_mode: bool = typer.Option(
+        False,
+        "--debug",
+        help="Write a verbose JSON payload with provenance, confidence, and merge metadata.",
+    ),
+    debug_output_path: Path | None = typer.Option(
+        None,
+        "--debug-output",
+        help="Optional output path for the verbose debug JSON payload.",
+    ),
 ) -> None:
     """Run the candidate transformation pipeline from CSV and resume inputs."""
     orchestrator = CandidateTransformationOrchestrator()
@@ -31,7 +41,14 @@ def run(
         resume_path=resume_path,
         output_path=output_path,
         projection_config_path=projection_config_path,
+        debug_mode=debug_mode,
+        debug_output_path=debug_output_path,
     )
+
+    target_output = (
+        output_path if output_path is not None else Path("output/candidate.json")
+    )
+    typer.echo(f"Output written to {target_output}")
 
 
 if __name__ == "__main__":

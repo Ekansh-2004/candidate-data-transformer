@@ -32,10 +32,37 @@ LIST_SPLIT_PATTERN = re.compile(r"[,;/|]+")
 
 SECTION_ALIASES: dict[str, tuple[str, ...]] = {
     "summary": ("summary", "professional summary", "profile", "about"),
-    "experience": ("experience", "work experience", "employment", "professional experience"),
+    "experience": (
+        "experience",
+        "work experience",
+        "employment",
+        "professional experience",
+    ),
     "education": ("education", "academic background", "academics"),
-    "skills": ("skills", "technical skills", "core skills", "technologies"),
+    "skills": (
+        "skills",
+        "technical skills",
+        "core skills",
+        "technologies",
+        "technical proficiency",
+    ),
+    "projects": ("projects", "personal projects", "selected projects"),
+    "honors": ("honors", "awards", "achievements", "honors and awards"),
+    "certifications": ("certifications", "licenses", "certificates"),
 }
+
+MAJOR_SECTION_NAMES: frozenset[str] = frozenset(
+    {
+        "header",
+        "summary",
+        "experience",
+        "education",
+        "skills",
+        "projects",
+        "honors",
+        "certifications",
+    }
+)
 
 
 class ResumePdfParser(CandidateParser):
@@ -58,7 +85,9 @@ class ResumePdfParser(CandidateParser):
 
         lines = self._prepare_lines(text)
         sections = self._detect_sections(lines)
-        candidate = self._build_candidate(lines=lines, sections=sections, source_name=path.name)
+        candidate = self._build_candidate(
+            lines=lines, sections=sections, source_name=path.name
+        )
         LOGGER.info("Parsed resume PDF candidate with name=%s", candidate.full_name)
         return candidate
 
@@ -155,12 +184,16 @@ class ResumePdfParser(CandidateParser):
             ]
         if phone_numbers:
             provenance["phone_numbers"] = [
-                self._make_provenance("phone_numbers", source_name, extracted_value=value)
+                self._make_provenance(
+                    "phone_numbers", source_name, extracted_value=value
+                )
                 for value in phone_numbers
             ]
         if location:
             provenance["locations"] = [
-                self._make_provenance("locations", source_name, extracted_value=location)
+                self._make_provenance(
+                    "locations", source_name, extracted_value=location
+                )
             ]
         if skills:
             provenance["skills"] = [
@@ -248,8 +281,10 @@ class ResumePdfParser(CandidateParser):
                 phone_numbers.append(normalized)
         return phone_numbers
 
-    def _extract_skills(self, sections: dict[str, list[str]], source_name: str) -> list[Skill]:
-        """Extract canonical skills from a dedicated skills section."""
+    def _extract_skills(
+        self, sections: dict[str, list[str]], source_name: str
+    ) -> list[Skill]:
+        """Extract skills only from a dedicated skills section and ignore adjacent prose."""
         skills_section = sections.get("skills", [])
         if not skills_section:
             return []
@@ -260,16 +295,23 @@ class ResumePdfParser(CandidateParser):
             if not line:
                 continue
             normalized_line = line.lstrip("-*• ").strip()
-            for token in self._split_skill_line(normalized_line):
-                key = token.casefold()
+            if not normalized_line:
+                continue
+            for token in self._extract_skill_tokens(normalized_line):
+                cleaned_token = self._clean_skill_token(token)
+                if not cleaned_token:
+                    continue
+                key = cleaned_token.casefold()
                 if key in seen:
                     continue
                 seen.add(key)
                 skills.append(
                     Skill(
-                        name=token,
+                        name=cleaned_token,
                         provenance=[
-                            self._make_provenance("skills", source_name, extracted_value=token)
+                            self._make_provenance(
+                                "skills", source_name, extracted_value=cleaned_token
+                            )
                         ],
                     )
                 )
@@ -325,14 +367,19 @@ class ResumePdfParser(CandidateParser):
             if line and not self._line_contains_date_range(line)
         ]
         if len(block) > 1 and second_line and second_line not in description_lines:
-            if not self._line_contains_date_range(second_line) and second_line != company:
+            if (
+                not self._line_contains_date_range(second_line)
+                and second_line != company
+            ):
                 description_lines.insert(0, second_line)
 
         description = " ".join(description_lines) if description_lines else None
         highlights = [line for line in description_lines if line]
 
         if not company or not title:
-            LOGGER.warning("Could not parse complete experience block in resume: %s", block)
+            LOGGER.warning(
+                "Could not parse complete experience block in resume: %s", block
+            )
             return None
 
         return Experience(
@@ -351,12 +398,15 @@ class ResumePdfParser(CandidateParser):
             ],
         )
 
-    def _parse_education_block(self, block: list[str], source_name: str) -> Education | None:
+    def _parse_education_block(
+        self, block: list[str], source_name: str
+    ) -> Education | None:
         """Parse one education block using line and separator heuristics."""
         if not block:
             return None
 
-        institution = block[0].lstrip("-*• ").strip()
+        institution_line = block[0].lstrip("-*• ").strip()
+        institution, location = self._split_institution_and_location(institution_line)
         degree = None
         field_of_study = None
         grade = None
@@ -364,12 +414,17 @@ class ResumePdfParser(CandidateParser):
 
         for line in block[1:]:
             normalized_line = line.lstrip("-*• ").strip()
+            if not normalized_line:
+                continue
             if self._line_contains_date_range(normalized_line):
                 continue
-            if normalized_line.lower().startswith(("gpa", "grade", "cgpa", "percentage")):
+            if self._looks_like_grade_line(normalized_line):
                 grade = normalized_line
                 continue
-            if degree is None:
+            if location is None and self._looks_like_location(normalized_line):
+                location = normalized_line
+                continue
+            if degree is None and not self._looks_like_institution(normalized_line):
                 degree, field_of_study = self._split_degree_and_field(normalized_line)
 
         if not institution:
@@ -379,6 +434,7 @@ class ResumePdfParser(CandidateParser):
         return Education(
             institution=institution,
             degree=degree,
+            location=location,
             field_of_study=field_of_study,
             start_date=start_date,
             end_date=end_date,
@@ -396,11 +452,15 @@ class ResumePdfParser(CandidateParser):
         self, first_line: str, second_line: str
     ) -> tuple[str | None, str | None]:
         """Infer title and company from the first two lines of an experience block."""
-        parts = [part.strip() for part in SEPARATOR_PATTERN.split(first_line) if part.strip()]
+        parts = [
+            part.strip() for part in SEPARATOR_PATTERN.split(first_line) if part.strip()
+        ]
         if len(parts) >= 2:
             return parts[0], parts[1]
 
-        at_match = re.match(r"(?P<title>.+?)\s+at\s+(?P<company>.+)", first_line, re.IGNORECASE)
+        at_match = re.match(
+            r"(?P<title>.+?)\s+at\s+(?P<company>.+)", first_line, re.IGNORECASE
+        )
         if at_match:
             return at_match.group("title").strip(), at_match.group("company").strip()
 
@@ -409,7 +469,9 @@ class ResumePdfParser(CandidateParser):
 
         return None, None
 
-    def _extract_dates_from_lines(self, lines: list[str]) -> tuple[object | None, object | None]:
+    def _extract_dates_from_lines(
+        self, lines: list[str]
+    ) -> tuple[object | None, object | None]:
         """Parse a date range from the provided block lines when possible."""
         for line in lines:
             match = DATE_RANGE_PATTERN.search(line)
@@ -417,7 +479,11 @@ class ResumePdfParser(CandidateParser):
                 continue
             start_date = self._parse_date_token(match.group("start"))
             end_token = match.group("end")
-            end_date = None if end_token.lower() in {"present", "current"} else self._parse_date_token(end_token)
+            end_date = (
+                None
+                if end_token.lower() in {"present", "current"}
+                else self._parse_date_token(end_token)
+            )
             return start_date, end_date
         return None, None
 
@@ -426,8 +492,18 @@ class ResumePdfParser(CandidateParser):
         cleaned = value.strip()
         try:
             if re.fullmatch(r"\d{4}", cleaned):
-                return date_parser.parse(cleaned, default=date_parser.parse("January 1 1900")).date().replace(month=1, day=1)
-            return date_parser.parse(cleaned, default=date_parser.parse("January 1 1900")).date().replace(day=1)
+                return (
+                    date_parser.parse(
+                        cleaned, default=date_parser.parse("January 1 1900")
+                    )
+                    .date()
+                    .replace(month=1, day=1)
+                )
+            return (
+                date_parser.parse(cleaned, default=date_parser.parse("January 1 1900"))
+                .date()
+                .replace(day=1)
+            )
         except (ValueError, OverflowError):
             return None
 
@@ -435,10 +511,65 @@ class ResumePdfParser(CandidateParser):
         """Split a degree line into degree and field of study when possible."""
         if not value:
             return None, None
-        if " in " in value.lower():
-            prefix, suffix = re.split(r"\s+in\s+", value, maxsplit=1, flags=re.IGNORECASE)
+        normalized = value.strip()
+        if not normalized:
+            return None, None
+
+        if re.search(r"\s+in\s+", normalized, flags=re.IGNORECASE):
+            prefix, suffix = re.split(
+                r"\s+in\s+", normalized, maxsplit=1, flags=re.IGNORECASE
+            )
             return prefix.strip(), suffix.strip()
-        return value, None
+
+        if "," in normalized:
+            degree, field_of_study = [part.strip() for part in normalized.split(",", 1)]
+            if degree and field_of_study:
+                return degree, field_of_study
+
+        return normalized, None
+
+    def _split_institution_and_location(
+        self, value: str
+    ) -> tuple[str | None, str | None]:
+        """Split a first-line institution entry that also includes a location."""
+        cleaned = value.strip()
+        if not cleaned:
+            return None, None
+        if "|" not in cleaned:
+            return cleaned, None
+
+        parts = [part.strip() for part in cleaned.split("|", 1)]
+        if len(parts) != 2:
+            return cleaned, None
+        institution, location = parts
+        if not institution or not location:
+            return cleaned, None
+        if self._looks_like_location(location):
+            return institution, location
+        return cleaned, None
+
+    def _looks_like_institution(self, value: str) -> bool:
+        """Return whether a line looks like an institution name rather than a degree line."""
+        if not value:
+            return False
+        if self._looks_like_grade_line(value):
+            return False
+        if self._looks_like_location(value):
+            return False
+        if self._line_contains_date_range(value):
+            return False
+        if re.search(
+            r"\b(?:bachelor|master|b\.sc|bsc|b\.tech|btech|bs|ba|ma|ms|m\.s|m\.tech|phd|mphil)\b",
+            value,
+            re.IGNORECASE,
+        ):
+            return False
+        return True
+
+    def _looks_like_grade_line(self, value: str) -> bool:
+        """Return whether a line looks like a grade or GPA field."""
+        normalized = value.strip().lower()
+        return normalized.startswith(("gpa", "grade", "cgpa", "percentage", "score"))
 
     def _split_blocks(self, lines: list[str]) -> list[list[str]]:
         """Split section lines into logical entry blocks using blank lines."""
@@ -455,12 +586,81 @@ class ResumePdfParser(CandidateParser):
             blocks.append(current_block)
         return blocks
 
-    def _split_skill_line(self, line: str) -> list[str]:
-        """Split one skills line into candidate skill tokens."""
+    def _extract_skill_tokens(self, line: str) -> list[str]:
+        """Split one skills line into candidate skill tokens while handling category labels."""
         if ":" in line:
-            _, suffix = line.split(":", 1)
-            line = suffix.strip()
-        return [token.strip() for token in LIST_SPLIT_PATTERN.split(line) if token.strip()]
+            prefix, suffix = line.split(":", 1)
+            if self._looks_like_skill_category(prefix):
+                line = suffix.strip()
+            else:
+                line = line.strip()
+
+        if not line:
+            return []
+
+        return [
+            token.strip() for token in LIST_SPLIT_PATTERN.split(line) if token.strip()
+        ]
+
+    def _looks_like_skill_category(self, value: str) -> bool:
+        """Return whether a label looks like a skills category heading."""
+        normalized = value.strip().lower()
+        return normalized in {
+            "languages",
+            "frameworks",
+            "frameworks & libraries",
+            "libraries",
+            "databases",
+            "tools",
+            "tools & platforms",
+            "platforms",
+            "concepts",
+            "skills",
+        }
+
+    def _clean_skill_token(self, token: str) -> str | None:
+        """Remove noise and keep only plausible skill-like values."""
+        cleaned = token.strip()
+        if not cleaned:
+            return None
+        if cleaned.endswith((":", ".")):
+            cleaned = cleaned[:-1].strip()
+        if not cleaned:
+            return None
+        if len(cleaned) <= 1:
+            return None
+        if self._looks_like_sentence(cleaned):
+            return None
+        if self._contains_percent(cleaned):
+            return None
+        if self._looks_like_project_title(cleaned):
+            return None
+        return cleaned
+
+    def _looks_like_sentence(self, value: str) -> bool:
+        """Return whether a token resembles prose rather than a skill."""
+        if not value:
+            return False
+        if " " in value:
+            parts = value.split()
+            if all(re.fullmatch(r"[A-Za-z0-9+/.-]+", part) for part in parts):
+                return False
+            return True
+        return not re.fullmatch(r"[A-Za-z0-9+/.-]+", value)
+
+    def _contains_percent(self, value: str) -> bool:
+        """Return whether the token contains a percentage or metric."""
+        return "%" in value or re.search(r"\b\d+(?:\.\d+)?%", value) is not None
+
+    def _looks_like_project_title(self, value: str) -> bool:
+        """Return whether the token resembles a project title or achievement phrase."""
+        if len(value.split()) > 4:
+            return True
+        if value.lower().startswith(
+            ("built", "developed", "created", "improved", "won")
+        ):
+            return True
+        return False
 
     def _normalize_phone_number(self, value: str) -> str | None:
         """Normalize phone text while keeping the original readable structure."""
@@ -493,7 +693,10 @@ class ResumePdfParser(CandidateParser):
 
     def _contains_phone_number(self, value: str) -> bool:
         """Check whether a line contains a recognizable phone number."""
-        return any(self._normalize_phone_number(match) for match in PHONE_PATTERN.findall(value))
+        return any(
+            self._normalize_phone_number(match)
+            for match in PHONE_PATTERN.findall(value)
+        )
 
     def _line_contains_date_range(self, value: str) -> bool:
         """Check whether a line contains a supported date range token."""
